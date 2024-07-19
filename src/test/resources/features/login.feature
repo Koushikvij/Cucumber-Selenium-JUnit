@@ -1,17 +1,29 @@
-Feature: Login
-
-Background: The User opens login Page
- Given User Launches Chrome Browser
- When user opens facebook  portal link "https://www.facebook.com/"
- Then User should see the  page title "Facebook - log in or sign up"
-
-Scenario Outline: Validating the Login functionality
-    When User enters Username as "<username>" and Password as "<password>" 
-    Then User clicks on Login button with expected status as "<status>"
-    Then User should see the Facebook Home page on successful login status "<status>"
-    
- Examples:
-    | username | password   | status      |
-    |          |            | Both Fail   |
-    | Valid    |            | Missing Password  |    
-    | Valid    | Valid      | Pass        |
+Feature: Login to HRM Application 
+ 
+Background: 
+   Given User is on HRMLogin page "https://opensource-demo.orangehrmlive.com/"
+  
+   @ValidCredentials
+   Scenario: Login with valid credentials
+      
+    When User enters username as "Admin" and password as "admin123"
+    Then User should be able to login successfully and new page open
+     
+   @InvalidCredentials
+   Scenario Outline: Login with invalid credentials
+      
+    When User enters username as "<username>" and password as "<password>"
+    Then User should be able to see error message "<errorMessage>"
+     
+  Examples:
+  | username   | password  | errorMessage                      |
+  | Admin      | admin12$$ | Invalid credentials               |
+  | admin$$    | admin123  | Invalid credentials               |
+  | abc123     | xyz$$     | Invalid credentials               |
+   
+   
+   @MissingUsername
+   Scenario Outline: Login with blank username
+      
+    When User enters username as " " and password as "admin123"
+    Then User should be able to see a message "Required" below Username
